@@ -1,4 +1,5 @@
 import random
+from random import randint
 
 # Base stats, limites fixées et ne changent jamais au fil de la partie.
 p_hp = 150
@@ -16,6 +17,7 @@ e_stam = 70
 e_acc = 90
 e_aff = random.randint(10, 30)
 e_slots = 5
+e_yield = 50
 
 # |current stats|, sont elles qui changent au fil du jeu.
 cp_hp = p_hp
@@ -34,13 +36,16 @@ ce_slots = e_slots
 
 #Stats mid combat
 dmg_dealt: int = 0  #Changent au value nécéssaire et retournent à 0
-dmg_dealt_msg = (f"Tu as infligé {dmg_dealt} dmg")
 dmg_taken: int = 0  #Changent au value nécéssaire et retournent à 0
-dmg_taken_msg = (f"Tu as subi {dmg_taken} dmg")
+# print(f"Tu as subi {dmg_taken} dmg.") ## à copier quand nécéssaire
+# print(f"Tu as infligé {dmg_dealt} dmg.") ## à copier quand nécéssaire
+
 # misc
 p_tour = "VOTRE TOUR"
 actions_m = "VOS ACTIONS"
 print(f"e.atk: {e_atk}, e.def: {e_def}, e_aff: {e_aff}") #voir stats rand
+# print(f"Tu as subi {dmg_taken} dmg.") ## à copier quand nécéssaire
+# print(f"Tu as infligé {dmg_dealt} dmg.") ## à copier quand nécéssaire
 
 
 #||plan actions||:
@@ -53,11 +58,11 @@ print(f"e.atk: {e_atk}, e.def: {e_def}, e_aff: {e_aff}") #voir stats rand
 
 #jeu commence
 def main():
-    while p_hp > 0 and e_hp > 0:
+    while cp_hp > 0 and ce_hp > 0:
         #Tour joueur !11!!1!1
         print(f">{p_tour:=^20}<")
-        print(f"Vos PV: {p_hp}")
-        print(f"PV ennemi: {e_hp}")
+        print(f"Vos PV: {cp_hp}")
+        print(f"PV ennemi: {ce_hp}")
         print(f">{actions_m:=^10}<")
         print("""    1. Attaquer
     2. Garde
@@ -70,33 +75,43 @@ def main():
             if action == "1":
                 attaque()
                 break
-            elif action == 2:
+            elif action == "2":
                 garde()
                 break
-            elif action == 3:
+            elif action == "3":
                 recup()
                 break
-            elif action == 4:
+            elif action == "4":
                 parry()
                 break
-            elif action == 5:
+            elif action == "5":
                 sorts()
                 break
-            elif action == 6:
+            elif action == "6":
                 cast()
                 break
             elif action == "0":
                 suicide()
+                break
             else:
                 print("Saisissez un chiffre valide.")
     if cp_hp <= 0:
         print("Bruhh t mort esti de pas bon.")
+        exit()
     else:
-        print("bravo tu as tué ton ennemi")
+        print(f"""bravo tu as tué ton ennemi.
+    Tu as gagné {e_yield} exp.""")
+        exit()
 
 
 def attaque():
-    return "shink shink"
+    global ce_hp, dmg_dealt
+    print("Tu touches le dih à ton ennemi aggresivement.")
+    dmg_dealt = ce_hp
+    ce_hp =- dmg_dealt
+    print(f"Tu as infligé {dmg_dealt} dmg.")
+    dmg_dealt = 0
+    return None
 
 
 def garde():
@@ -121,12 +136,15 @@ def cast():
 
 def suicide():
     print("""> Tu ne pouvais pas continuer de vivre ainsi, les voix dans ta tête ont pris le dessus.
-    >Tu te plantes ton épée dans le coeur.""")
+>Tu te plantes ton épée dans le coeur.""")
+    global dmg_taken
+    global cp_hp
+    print(cp_hp)
     dmg_taken = cp_hp
-    cp_hp = -dmg_taken
-    print(dmg_taken_msg)
+    cp_hp = cp_hp - dmg_taken
+    print(f"Tu as subi {dmg_taken} dmg.")
     dmg_taken = 0
-
+    return None
 
 if __name__ == "__main__":
     main()
