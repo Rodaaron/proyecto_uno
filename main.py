@@ -33,23 +33,23 @@ cp_slots = p_slots
 ce_hp = e_hp
 ce_atk = e_atk
 ce_def = e_def
+ce_stam = e_stam
 ce_acc = e_acc
 ce_aff = e_aff
 ce_slots = e_slots
 
 #Stats mid combat
 dmg_dealt: int = 0  #Changent au value nécéssaire et retournent à 0
-dmg_taken: int = 0  #Changent au value nécéssaire et retournent à 0
 # print(f"Tu as subi {dmg_taken} dmg.") ## à copier quand nécéssaire
 # print(f"Tu as infligé {dmg_dealt} dmg.") ## à copier quand nécéssaire
 
 # misc
 p_tour = "VOTRE TOUR"
 actions_m = "VOS ACTIONS"
-print(f"e.atk: {e_atk}, e.def: {e_def}, e_aff: {e_aff}, e_pow: {e_pow}") #voir stats rand
+print(f"e.atk: {ce_atk}, e.def: {ce_def}, e_aff: {ce_aff}, e_pow: {e_pow}") #voir stats rand
 # print(f"Tu as subi {dmg_taken} dmg.") ## à copier quand nécéssaire
 # print(f"Tu as infligé {dmg_dealt} dmg.") ## à copier quand nécéssaire
-
+has_played : bool = False
 
 #||plan actions||:
 #   attaquer: opération atk vs e_def, check par p_acc, draine p_stam
@@ -75,15 +75,21 @@ def main():
     5. Voir vos Sorts (aucune action req.)
     6. Conjurer (nique ta mère si c pas un vrai mot jmen fous)""")
         while True:
+            has_played: bool = False
             action = input()
             if action == "1":
-                attaque()
+                if cp_stam > 15:
+                    attaque()
+                    has_played = True
+                else:
+                    print("> Vous n'avez pas assez d'endurance pour attaquer!")
                 break
             elif action == "2":
                 garde()
                 break
             elif action == "3":
                 recup()
+                has_played = True
                 break
             elif action == "4":
                 parry()
@@ -99,6 +105,8 @@ def main():
                 break
             else:
                 print("Saisissez un chiffre valide.")
+            if has_played == True:
+                e_tour()
     if cp_hp <= 0:
         print("Bruhh t mort esti de pas bon.")
         exit()
@@ -112,7 +120,12 @@ def attaque():
     global ce_hp, dmg_dealt, cp_stam, cp_acc
     hit_chance = randint(1, 100)
     if hit_chance <= cp_acc:  # Échoue si le % random est + grand que l'acc actuelle
-        dmg_dealt = int(((p_pow * cp_atk / ce_def) / 10) + (p_pow * .5))
+        print(int(cp_atk * 25/ cp_def))
+        pow_bonus = int((p_pow / 2 - ce_def / 2))
+        if pow_bonus < 1:
+            pow_bonus = 0
+        print(pow_bonus)
+        dmg_dealt = int(((cp_atk * 25 / cp_def) + pow_bonus + (randint(-3, 3))))
         if dmg_dealt <= 0:
             dmg_dealt = random.randint(1, 3)
         ce_hp = ce_hp - dmg_dealt
@@ -132,7 +145,13 @@ def garde():
 
 
 def recup():
-    return "*respire"
+    global cp_stam, p_stam, cp_def
+    stam_regen = int(p_stam / 2)
+    cp_stam = cp_stam + stam_regen
+    print(f"> Tu regagnes {stam_regen} pts d'endurance!")
+    cp_def =- cp_def - 10
+    # TODO réduire défense
+    return None
 
 
 def parry():
@@ -150,14 +169,20 @@ def cast():
 def suicide():
     print("""> Tu ne pouvais pas continuer de vivre ainsi, les voix dans ta tête ont pris le dessus.
 >Tu te plantes ton épée dans le coeur.""")
-    global dmg_taken
-    global cp_hp
-    print(cp_hp)
-    dmg_taken = cp_hp
-    cp_hp = cp_hp - dmg_taken
-    print(f"Tu as subi {dmg_taken} dmg.")
-    dmg_taken = 0
+    global dmg_dealt, cp_hp
+    dmg_dealt = cp_hp
+    cp_hp = cp_hp - dmg_dealt
+    print(f"Tu as subi {dmg_dealt} dmg.")
     return None
+
+
+def e_tour():
+    global ce_stam
+    action_chance: int = randint(1, 100)
+    if ce_stam = 0:
+        e_recup()
+    if action_chance < 1 and action_chance > 50:
+    #TODO tour ennemi
 
 if __name__ == "__main__":
     main()
