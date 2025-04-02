@@ -64,9 +64,9 @@ def main():
     while cp_hp > 0 and ce_hp > 0:
         #Tour joueur !11!!1!1
         print(f">{p_tour:=^20}<")
-        print(f"Vos PV: {cp_hp}")
-        print(f"Votre endurance: {cp_stam}")
-        print(f"PV ennemi: {ce_hp}")
+        print(f"Vos PV: {cp_hp}/{p_hp}")
+        print(f"Votre endurance: {cp_stam}/{p_stam}")
+        print(f"PV ennemi: {ce_hp}/{e_hp}")
         print(f">{actions_m:=^10}<")
         print("""    1. Attaquer
     2. Garde
@@ -148,6 +148,9 @@ def recup():
     global cp_stam, p_stam, cp_def
     stam_regen = int(p_stam / 2)
     cp_stam = cp_stam + stam_regen
+    if cp_stam > p_stam:
+        stam_regen = p_stam - cp_stam
+        cp_stam = p_stam
     print(f"> Tu regagnes {stam_regen} pts d'endurance!")
     cp_def =- cp_def - 10
     # TODO réduire défense
@@ -177,11 +180,14 @@ def suicide():
 
 
 def e_tour():
-    global ce_stam
-    action_chance: int = randint(1, 100)
-    if ce_stam = 0:
-        e_recup()
-    if action_chance < 1 and action_chance > 50:
+    #global ce_stam
+    #action_chance: int = randint(1, 100)
+    #if ce_stam < 25 and action_chance <= 60:
+        #e_recup()
+    #elif action_chance <= 1 and action_chance > 50:
+        #e_attaque
+    #elif
+    pass
     #TODO tour ennemi
 
 if __name__ == "__main__":
