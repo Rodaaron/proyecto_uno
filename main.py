@@ -1,5 +1,6 @@
 import random
 from random import randint
+from act_e import *
 
 # Base stats, limites fixées et ne changent jamais au fil de la partie.
 p_hp = 150
@@ -49,7 +50,6 @@ actions_m = "VOS ACTIONS"
 print(f"e.atk: {ce_atk}, e.def: {ce_def}, e_aff: {ce_aff}, e_pow: {e_pow}") #voir stats rand
 # print(f"Tu as subi {dmg_taken} dmg.") ## à copier quand nécéssaire
 # print(f"Tu as infligé {dmg_dealt} dmg.") ## à copier quand nécéssaire
-has_played : bool = False
 
 #||plan actions||:
 #   attaquer: opération atk vs e_def, check par p_acc, draine p_stam
@@ -62,6 +62,7 @@ has_played : bool = False
 #jeu commence
 def main():
     while cp_hp > 0 and ce_hp > 0:
+        has_played: bool = False
         #Tour joueur !11!!1!1
         print(f">{p_tour:=^20}<")
         print(f"Vos PV: {cp_hp}/{p_hp}")
@@ -75,7 +76,6 @@ def main():
     5. Voir vos Sorts (aucune action req.)
     6. Conjurer (nique ta mère si c pas un vrai mot jmen fous)""")
         while True:
-            has_played: bool = False
             action = input()
             if action == "1":
                 if cp_stam > 15:
@@ -89,7 +89,7 @@ def main():
                 break
             elif action == "3":
                 recup()
-                has_played = True
+                has_played
                 break
             elif action == "4":
                 parry()
@@ -120,11 +120,9 @@ def attaque():
     global ce_hp, dmg_dealt, cp_stam, cp_acc
     hit_chance = randint(1, 100)
     if hit_chance <= cp_acc:  # Échoue si le % random est + grand que l'acc actuelle
-        print(int(cp_atk * 25/ cp_def))
         pow_bonus = int((p_pow / 2 - ce_def / 2))
         if pow_bonus < 1:
             pow_bonus = 0
-        print(pow_bonus)
         dmg_dealt = int(((cp_atk * 25 / cp_def) + pow_bonus + (randint(-3, 3))))
         if dmg_dealt <= 0:
             dmg_dealt = random.randint(1, 3)
@@ -152,7 +150,6 @@ def recup():
         stam_regen = p_stam - cp_stam
         cp_stam = p_stam
     print(f"> Tu regagnes {stam_regen} pts d'endurance!")
-    cp_def =- cp_def - 10
     # TODO réduire défense
     return None
 
@@ -180,14 +177,22 @@ def suicide():
 
 
 def e_tour():
-    #global ce_stam
-    #action_chance: int = randint(1, 100)
-    #if ce_stam < 25 and action_chance <= 60:
-        #e_recup()
-    #elif action_chance <= 1 and action_chance > 50:
-        #e_attaque
-    #elif
-    pass
+    global ce_stam
+    a_c: int = randint(1, 100)  #(a_c = action_chance)
+    print(f"a_c: {a_c}")
+    if ce_stam < 25 and a_c <= 60 or ce_stam < 15:
+        print()
+        e_recup()
+    elif a_c <= 1 and a_c > 70:
+        print("L'ennemi attaque!")
+        e_attaque()
+    elif a_c <= 70 and a_c > 85:
+        print("L'ennemi monte sa garde!")
+        e_garde()
+    elif a_c <= 85 and a_c >= 100:
+        print("L'ennemi lance un sort!")
+        e_cast()
+    return None
     #TODO tour ennemi
 
 if __name__ == "__main__":
